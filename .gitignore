@@ -64,3 +64,9 @@ common/autoinstallers/*/.npmrc
 # OSX
 #
 .DS_Store
+
+*.d.ts
+*.js.map
+index.js
+
+imports/eval.js

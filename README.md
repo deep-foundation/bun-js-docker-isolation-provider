@@ -21,8 +21,10 @@
     - `{ resolved?: any; rejected?: any; }` - If resolved or rejected is not null, then it's result of execution
 
 
-## Install/Build Deep Client PHP extension implemented in C++
+## Install/Build
 ```bash
+npm install
+npm ci && npm run package:build
 docker build -t bun-js-docker-isolation-provider .
 docker run -d -p 39100:39100 -e PORT=39100 bun-js-docker-isolation-provider
 ```
