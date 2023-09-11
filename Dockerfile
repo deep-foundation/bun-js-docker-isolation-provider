@@ -11,7 +11,7 @@ COPY imports ./imports
 RUN apt-get update
 RUN apt-get install ffmpeg -y
 
-RUN chmod +x /app/bun-install.sh
+RUN chmod +x bun-install.sh
 
 CMD ["bun-install.sh"]
 
