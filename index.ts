@@ -92,5 +92,11 @@ app.use('/http-call', async (req, res, next) => {
   }
 });
 
+app.post('/stop-server', (req, res) => {
+  console.log('Stopping server...');
+  process.exit(0);
+  res.send('Stopping server...');
+});
+
 http.createServer({ maxHeaderSize: 10*1024*1024*1024 }, app).listen(process.env.PORT);
 console.log(`Listening ${process.env.PORT} port`);
