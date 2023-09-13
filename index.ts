@@ -1,17 +1,13 @@
-import express from 'express';
 import { generateApolloClient } from "@deep-foundation/hasura/client.js";
 import { DeepClient, parseJwt } from "@deep-foundation/deeplinks/imports/client.js";
 import { gql } from '@apollo/client/index.js';
 import memoize from 'lodash/memoize.js';
-import http from 'http';
-// import { parseStream, parseFile } from 'music-metadata';
 import { createRequire } from 'node:module';
-import bodyParser from 'body-parser';
-const require = createRequire(import.meta.url);
 
+
+const require = createRequire(import.meta.url);
 const memoEval = memoize(eval);
 
-const app = express();
 
 const GQL_URN = process.env.GQL_URN || 'localhost:3006/gql';
 const GQL_SSL = process.env.GQL_SSL || 0;
@@ -49,54 +45,69 @@ const makeDeepClient = (token: string) => {
   return deepClient;
 }
 
-app.use(bodyParser.json({limit: '50mb'}));
-app.use(bodyParser.urlencoded({limit: '50mb', extended: true}));
-app.get('/healthz', (req, res) => {
-  res.json({});
-});
-app.post('/init', (req, res) => {
-  res.json({});
-});
-app.post('/call', async (req, res) => {
-  try {
-    console.log('call body params', req?.body?.params);
-    const { jwt, code, data } = req?.body?.params || {};
-    const fn = makeFunction(code);
-    const deep = makeDeepClient(jwt);
-    const result = await fn({ data, deep, gql, require: requireWrapper }); // Supports both sync and async functions the same way
-    console.log('call result', result);
-    res.json({ resolved: result });
-  }
-  catch(rejected)
-  {
-    const processedRejection = JSON.parse(toJSON(rejected));
-    console.log('rejected', processedRejection);
-    res.json({ rejected: processedRejection });
-  }
-});
-
-app.use('/http-call', async (req, res, next) => {
-  try {
-    const options = decodeURI(`${req.headers['deep-call-options']}`) || '{}';
-    console.log('deep-call-options', options);
-    const { jwt, code, data } = JSON.parse(options as string);
-    const fn = makeFunction(code);
-    const deep = makeDeepClient(jwt);
-    await fn(req, res, next, { data, deep, gql, require: requireWrapper }); // Supports both sync and async functions the same way
-  }
-  catch(rejected)
-  {
-    const processedRejection = JSON.parse(toJSON(rejected));
-    console.log('rejected', processedRejection);
-    res.json({ rejected: processedRejection }); // TODO: Do we need to send json to client?
-  }
-});
-
-app.post('/stop-server', (req, res) => {
-  console.log('Stopping server...');
-  process.exit(0);
-  res.send('Stopping server...');
-});
-
-http.createServer({ maxHeaderSize: 10*1024*1024*1024 }, app).listen(process.env.PORT);
 console.log(`Listening ${process.env.PORT} port`);
+
+const server = Bun.serve({
+  port: process.env.PORT, // Specify the desired port
+  async fetch(req, res, next) {
+    const url = new URL(req.url);
+
+    switch(url.pathname) { 
+      case "/": { 
+         return new Response("{}"); 
+      } 
+      case "/healthz": { 
+        return new Response("{}"); 
+      }
+      case "/init": { 
+        return new Response("{}"); 
+      }
+      case "/call": { 
+        try {
+          const formdata = await req.formData();
+
+          console.log('call body params', formdata);
+          const { jwt, code, data } = formdata || {};
+          const fn = makeFunction(code);
+          const deep = makeDeepClient(jwt);
+          const result = await fn({ data, deep, gql, require: requireWrapper }); // Supports both sync and async functions the same way
+          console.log('call result', result);
+          res.json({ resolved: result });
+        }
+        catch(rejected)
+        {
+          const processedRejection = JSON.parse(toJSON(rejected));
+          console.log('rejected', processedRejection);
+          res.json({ rejected: processedRejection });
+        }
+      }
+      case "/http-call": { 
+        try {
+          const options = decodeURI(`${req.headers['deep-call-options']}`) || '{}';
+          console.log('deep-call-options', options);
+          const { jwt, code, data } = JSON.parse(options as string);
+          const fn = makeFunction(code);
+          const deep = makeDeepClient(jwt);
+          await fn(req, res, next, { data, deep, gql, require: requireWrapper }); // Supports both sync and async functions the same way
+        }
+        catch(rejected)
+        {
+          const processedRejection = JSON.parse(toJSON(rejected));
+          console.log('rejected', processedRejection);
+          res.json({ rejected: processedRejection }); // TODO: Do we need to send json to client?
+        }
+      }
+      case "/stop-server": { 
+        console.log('Stopping server...');
+        process.exit(0);
+        return new Response("{}"); 
+      }
+      default: { 
+        return new Response("404!");
+      } 
+   }
+  },
+  error() {
+		return new Response(null, { status: 404 });
+	},
+});

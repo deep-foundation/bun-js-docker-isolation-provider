@@ -28,3 +28,16 @@ npm ci && npm run package:build
 docker build -t bun-js-docker-isolation-provider .
 docker run -d -p 39100:39100 -e PORT=39100 bun-js-docker-isolation-provider
 ```
+
+## Bun Build
+```bash
+npx bun build --target=bun ../index.ts --outfile=/index.js
+```
+#### or
+```bash
+npx bun build --compile /index.ts --outfile=/
+```
+#### or
+```bash
+npx bun build --minify --splitting --outdir=out ./index.ts
+```
