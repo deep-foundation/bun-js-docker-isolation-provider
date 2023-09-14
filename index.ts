@@ -65,12 +65,9 @@ const server = Bun.serve({
       case "/call": { 
         try {
           // const formdata = await req.formData();
+          const bodyStr = await req.json()
+          console.log('call body params', bodyStr);
 
-          //console.log('call body params', req.body);
-          let reader = req.body.getReader();
-          const { done, value } = await reader.read();
-          console.log('done', done);
-          console.log('value', value);
           /*const { jwt, code, data } = formdata || {};
           const fn = makeFunction(code);
           const deep = makeDeepClient(jwt);
