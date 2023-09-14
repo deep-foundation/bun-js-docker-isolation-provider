@@ -9,6 +9,7 @@ async ({ data, deep, require }) => {
 #### or install @archer-lotos/bun-js-tests package in deep
 
 
+## Information about the routes
 - `/healthz` - GET - 200 - Health check endpoint
   - Response:
     - `{}`
@@ -45,13 +46,13 @@ async ({ data, deep, require }) => {
 
 ```js
 async ({ data, deep, require }) => {
-    return deep.select(1);
+    return await deep.select(1);
 }
 ```
 
 ```js
 async ({ data, deep, require }) => {
-    return deep.insert({
+    return await deep.insert({
         "type_id": 58,
         "from_id": 0,
         "to_id": 0
