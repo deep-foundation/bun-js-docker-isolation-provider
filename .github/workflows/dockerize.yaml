@@ -18,7 +18,7 @@ jobs:
       - name: Install latest npm
         run: npm install -g npm@latest
       - name: build
-        run: npm ci && npm run package:build
+        run: npm ci
       - name: Display npm log
         if: ${{ failure() }}
         run: cat /home/runner/.npm/_logs/*-debug.log
