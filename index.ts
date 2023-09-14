@@ -9,13 +9,10 @@ const require = createRequire(import.meta.url);
 const memoEval = memoize(eval);
 
 
-const GQL_URN = process.env.GQL_URN || 'localhost:3006/gql';
+const GQL_URN = process.env.GQL_URN || '192.168.0.135:3006/gql';
 const GQL_SSL = process.env.GQL_SSL || 0;
 
 const requireWrapper = (id: string) => {
-  // if (id === 'music-metadata') {
-  //   return { parseStream, parseFile };
-  // }
   return require(id);
 }
 
@@ -54,13 +51,13 @@ const server = Bun.serve({
 
     switch(url.pathname) { 
       case "/": { 
-         return new Response("{}"); 
+         return Response.json("{}"); 
       } 
       case "/healthz": { 
-        return new Response("{}"); 
+        return Response.json("{}"); 
       }
       case "/init": { 
-        return new Response("{}"); 
+        return Response.json("{}"); 
       }
       case "/call": { 
         try {
