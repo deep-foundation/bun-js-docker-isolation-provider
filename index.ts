@@ -64,23 +64,20 @@ const server = Bun.serve({
       }
       case "/call": { 
         try {
-          // const formdata = await req.formData();
-          const bodyStr = await req.json()
-          console.log('call body params', bodyStr);
-
-          /*const { jwt, code, data } = formdata || {};
+          const bodyJson = await req.json()
+          console.log('call body params', bodyJson.params);
+          const { jwt, code, data } = bodyJson.params || {};
           const fn = makeFunction(code);
           const deep = makeDeepClient(jwt);
           const result = await fn({ data, deep, gql, require: requireWrapper }); // Supports both sync and async functions the same way
           console.log('call result', result);
-          res.json({ resolved: result });*/
-          return new Response("{}");
+          return Response.json({ resolved: result });
         }
         catch(rejected)
         {
           const processedRejection = JSON.parse(toJSON(rejected));
           console.log('rejected', processedRejection);
-          res.json({ rejected: processedRejection });
+          return Response.json({ rejected: processedRejection });
         }
       }
       case "/http-call": { 
@@ -96,7 +93,7 @@ const server = Bun.serve({
         {
           const processedRejection = JSON.parse(toJSON(rejected));
           console.log('rejected', processedRejection);
-          res.json({ rejected: processedRejection }); // TODO: Do we need to send json to client?
+          return Response.json({ rejected: processedRejection });
         }
       }
       case "/stop-server": { 
