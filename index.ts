@@ -64,15 +64,20 @@ const server = Bun.serve({
       }
       case "/call": { 
         try {
-          const formdata = await req.formData();
+          // const formdata = await req.formData();
 
-          console.log('call body params', formdata);
-          const { jwt, code, data } = formdata || {};
+          //console.log('call body params', req.body);
+          let reader = req.body.getReader();
+          const { done, value } = await reader.read();
+          console.log('done', done);
+          console.log('value', value);
+          /*const { jwt, code, data } = formdata || {};
           const fn = makeFunction(code);
           const deep = makeDeepClient(jwt);
           const result = await fn({ data, deep, gql, require: requireWrapper }); // Supports both sync and async functions the same way
           console.log('call result', result);
-          res.json({ resolved: result });
+          res.json({ resolved: result });*/
+          return new Response("{}");
         }
         catch(rejected)
         {
