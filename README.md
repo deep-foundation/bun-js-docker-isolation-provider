@@ -63,7 +63,7 @@ async ({ data, deep, require }) => {
 ## Install/Build
 ```bash
 npm install
-npm ci && npm run package:build
+npm ci
 docker build -t bun-js-docker-isolation-provider .
 docker run -d -p 39100:39100 -e PORT=39100 bun-js-docker-isolation-provider
 ```

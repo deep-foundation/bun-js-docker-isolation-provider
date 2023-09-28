@@ -8,6 +8,14 @@ import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
 const memoEval = memoize(eval);
 
+Bun.eval = (code: string) => {
+  const transpiler = new Bun.Transpiler({
+      loader: "ts"
+  });
+
+  return eval(transpiler.transformSync(`eval((${code}))`));
+}
+
 
 const GQL_URN = process.env.GQL_URN || '192.168.0.135:3006/gql';
 const GQL_SSL = process.env.GQL_SSL || 0;
@@ -21,7 +29,7 @@ DeepClient.resolveDependency = requireWrapper;
 const toJSON = (data) => JSON.stringify(data, Object.getOwnPropertyNames(data), 2);
 
 const makeFunction = (code: string) => {
-  const fn = memoEval(code);
+  const fn = Bun.eval(code);
   if (typeof fn !== 'function')
   {
     throw new Error("Executed handler's code didn't return a function.");
