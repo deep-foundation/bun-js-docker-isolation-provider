@@ -60,6 +60,41 @@ async ({ data, deep, require }) => {
 }
 ```
 
+### Examples in TypeScript
+```ts
+async ({deep, data}: {
+  deep: DeepClient;
+  data: {
+    newLink: Link<number>;
+  };
+}) => {
+    return await deep.insert({
+        "type_id": 58,
+        "from_id": 0,
+        "to_id": 0
+    });
+}
+```
+
+```ts
+async ({deep, data}: {
+  deep: DeepClient;
+  data: {
+    newLink: Link<number>;
+  };
+}) => {
+    return 5
+}
+```
+
+```ts
+async() => {
+  const myNumber: number = 5;
+  return myNumber
+}
+```
+
+
 ## Install/Build
 ```bash
 npm install
