@@ -13,7 +13,11 @@ Bun.eval = (code: string) => {
       loader: "ts"
   });
 
-  return eval(transpiler.transformSync(`eval((${code}))`));
+  transformSyncTs = transpiler.transformSync(`eval((${code}))`);
+
+  console.log('transformSyncTs', transformSyncTs);
+
+  return eval(transformSyncTs);
 }
 
 
